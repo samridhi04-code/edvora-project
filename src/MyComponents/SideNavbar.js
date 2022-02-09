@@ -1,20 +1,30 @@
 import React, {useEffect, useState }  from 'react';
 // import { useNavigate } from "react-router-dom";
 import Carousel from 'react-elastic-carousel';
+import  {Loading} from "../MyComponents/Loading";
 import Item from './Items';
 import './SideNavbar.css';
 
 export const SideNavbar = () => {
 
   const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   const getUsers = async() => {
+    try{
+      setLoading(false);
     const response = await fetch('https://assessment-edvora.herokuapp.com/');
     setUsers(await response.json());
+    }catch(error){
+      console.log("my error" + error);
+    }
   }
 
   useEffect(() => {
     getUsers();
   }, []);
+
+
 
 {/*EARLIER CODE BELOW */}
   // console.log(fetchedData);
@@ -56,6 +66,7 @@ const breakPoints = [
 // export const SideNavbar = () => {
   return(
       <>
+      
       <div className='container'>
       <div className=' yes row g-0'>
           <div className='col-6 col-md-2 mt-2 pt-2 m-4'>
@@ -67,26 +78,58 @@ const breakPoints = [
   <div className="btn-group dropend">
     <a className="mt-4 btn btn-secondary yes dropdown-toggle" href="#item-1" role="button" data-bs-toggle="dropdown" aria-expanded="false"><span className='no'>Products</span></a>
     <ul className="dropdown-menu" aria-labelledby="dropdownMenuLink">
-    <li><a className="dropdown-item" href="#">Action</a></li>
-    <li><a className="dropdown-item" href="#">Another action</a></li>
-    <li><a className="dropdown-item" href="#">Something else here</a></li>
+      {
+    users.map((curElem) => {
+  return(
+    <>
+    <li key={1}><a className="dropdown-item" href="#">{curElem.product_name}</a></li>
+    </>
+  )
+})
+}
+
+
+    {/* <li><a className="dropdown-item" href="#">Another action</a></li>
+       <li><a className="dropdown-item" href="#">Something else here</a></li> */}
+
+
   </ul>
   </div>
     
     <div className="btn-group dropend">
     <a className="mt-4 btn yes btn-secondary dropdown-toggle" href="#item-2" role="button" data-bs-toggle="dropdown" aria-expanded="false"><span className='no'>State</span></a>
     <ul className="dropdown-menu" aria-labelledby="dropdownMenuLink">
-    <li><a className="dropdown-item" href="#">Action</a></li>
-    <li><a className="dropdown-item" href="#">Another action</a></li>
-    <li><a className="dropdown-item" href="#">Something else here</a></li>
+    {
+    users.map((curElem) => {
+  return(
+    <>
+    <li key={2}><a className="dropdown-item" href="#">{curElem.address.state}</a></li>
+    </>
+  )
+})
+}
+
+
+    {/* <li><a className="dropdown-item" href="#">Another action</a></li>
+    <li><a className="dropdown-item" href="#">Something else here</a></li> */}
+
+
   </ul>
   </div>
   <div className="btn-group dropend">
     <a className="mt-4 btn yes btn-secondary dropdown-toggle" href="#item-3" role="button" data-bs-toggle="dropdown" aria-expanded="false"><span className='no'>City</span></a>
     <ul className="dropdown-menu" aria-labelledby="dropdownMenuLink">
-    <li><a className="dropdown-item" href="#">Action</a></li>
-    <li><a className="dropdown-item" href="#">Another action</a></li>
-    <li><a className="dropdown-item" href="#">Something else here</a></li>
+    {
+    users.map((curElem) => {
+  return(
+    <>
+    <li key={curElem.index}><a className="dropdown-item" href="#">{curElem.address.city}</a></li>
+    </>
+  )
+})
+}
+    {/* <li><a className="dropdown-item" href="#">Another action</a></li>
+    <li><a className="dropdown-item" href="#">Something else here</a></li> */}
   </ul>
   </div>
     
@@ -98,80 +141,83 @@ const breakPoints = [
 
 <p className='h1 mt-2 text-light'>Edvora</p>
 <p className='h2 try'> Products </p>
+
 {
 users.map((curElem) => {
+  const {product_name} = curElem;
+
   return(
     <>
-<p className='fs-3 text-light'>{curElem.product_name}</p>
+<p className='fs-3 text-light'>{product_name}</p>
 <hr className='text-light'/>
 <div className='hehe'>
 <Carousel breakPoints={breakPoints}> 
-<Item className='App'><div class="row g-0">
-  <div class="col-6 col-md-4 mt-1 p-4"><img src={curElem.image} className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>{curElem.city}</span></div>
-  <div class="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>{curElem.product_name}</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>{curElem.brand_name}</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>{curElem.price}</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : {curElem.date}</span></div>
+<Item className='App'><div className="row g-0">
+  <div className="col-6 col-md-4 mt-1 p-4"><img src={curElem.image} className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>{curElem.address.city}</span></div>
+  <div className="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>{curElem.product_name}</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>{curElem.brand_name}</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>${curElem.price}</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : {curElem.date}</span></div>
   <span style={{fontSize:"12px" , position:"relative", left:"-28px"}}> {curElem.discription}</span>
 </div></Item>
-<Item className='App'><div class="row g-0">
-  <div class="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
-  <div class="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
+<Item className='App'><div className="row g-0">
+  <div className="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>{curElem.address.city}</span></div>
+  <div className="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
   <span style={{fontSize:"12px" , position:"relative", left:"-28px"}}> Description of the product</span>
 </div></Item>
-<Item className='App'><div class="row g-0">
-  <div class="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
-  <div class="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
+<Item className='App'><div className="row g-0">
+  <div className="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>{curElem.address.city}</span></div>
+  <div className="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
   <span style={{fontSize:"12px" , position:"relative", left:"-28px"}}> Description of the product</span>
 </div></Item>
-<Item className='App'><div class="row g-0">
-  <div class="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
-  <div class="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
+<Item className='App'><div className="row g-0">
+  <div className="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>{curElem.address.city}</span></div>
+  <div className="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
   <span style={{fontSize:"12px" , position:"relative", left:"-28px"}}> Description of the product</span>
 </div></Item>
-<Item className='App'><div class="row g-0">
-  <div class="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
-  <div class="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
+<Item className='App'><div className="row g-0">
+  <div className="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>{curElem.address.city}</span></div>
+  <div className="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
   <span style={{fontSize:"12px" , position:"relative", left:"-28px"}}> Description of the product</span>
 </div></Item>
-<Item className='App'><div class="row g-0">
-  <div class="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
-  <div class="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
+<Item className='App'><div className="row g-0">
+  <div className="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>{curElem.address.city}</span></div>
+  <div className="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
   <span style={{fontSize:"12px" , position:"relative", left:"-28px"}}> Description of the product</span>
 </div></Item>
-<Item className='App'><div class="row g-0">
-  <div class="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
-  <div class="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
+<Item className='App'><div className="row g-0">
+  <div className="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>{curElem.address.city}</span></div>
+  <div className="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
   <span style={{fontSize:"12px" , position:"relative", left:"-28px"}}> Description of the product</span>
 </div></Item>
-<Item className='App'><div class="row g-0">
-  <div class="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
-  <div class="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
+<Item className='App'><div className="row g-0">
+  <div className="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>{curElem.address.city}</span></div>
+  <div className="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
   <span style={{fontSize:"12px" , position:"relative", left:"-28px"}}> Description of the product</span>
 </div></Item>
-<Item className='App'><div class="row g-0">
-  <div class="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
-  <div class="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
+<Item className='App'><div className="row g-0">
+  <div className="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>{curElem.address.city}</span></div>
+  <div className="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
   <span style={{fontSize:"12px" , position:"relative", left:"-28px"}}> Description of the product</span>
 </div></Item>
-<Item className='App'><div class="row g-0">
-  <div class="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
-  <div class="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
+<Item className='App'><div className="row g-0">
+  <div className="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>{curElem.address.city}</span></div>
+  <div className="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
   <span style={{fontSize:"12px" , position:"relative", left:"-28px"}}> Description of the product</span>
 </div></Item>
-<Item className='App'><div class="row g-0">
-  <div class="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
-  <div class="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
+<Item className='App'><div className="row g-0">
+  <div className="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>{curElem.address.city}</span></div>
+  <div className="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
   <span style={{fontSize:"12px" , position:"relative", left:"-28px"}}> Description of the product</span>
 </div></Item>
-<Item className='App'><div class="row g-0">
-  <div class="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
-  <div class="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
+<Item className='App'><div className="row g-0">
+  <div className="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>{curElem.address.city}</span></div>
+  <div className="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
   <span style={{fontSize:"12px" , position:"relative", left:"-28px"}}> Description of the product</span>
 </div></Item>
 </Carousel>
 </div>
-</>
-  )
+ </>
+   )
 })
-}
+ } 
 
 
 
@@ -181,135 +227,135 @@ users.map((curElem) => {
 <hr className='text-light'/>
 <div className='hehe'>
 <Carousel breakPoints={breakPoints}> 
-<Item className='App'><div class="row g-0">
-  <div class="col-6 col-md-4 mt-1 p-4"><img src={(image[0] || {}).image} className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>{(location[0] || {}).address}</span></div>
-  <div class="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>{(brand[0] || {}).brand_name}</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>{(price[0] || {}).price}</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : {(date[0] || {}).date}</span></div>
+<Item className='App'><div className="row g-0">
+  <div className="col-6 col-md-4 mt-1 p-4"><img src={(image[0] || {}).image} className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>{(location[0] || {}).address}</span></div>
+  <div className="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>{(brand[0] || {}).brand_name}</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>{(price[0] || {}).price}</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : {(date[0] || {}).date}</span></div>
   <span style={{fontSize:"12px" , position:"relative", left:"-28px"}}> {(description[0] || {}).discription}</span>
 </div></Item>
-<Item className='App'><div class="row g-0">
-  <div class="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
-  <div class="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
+<Item className='App'><div className="row g-0">
+  <div className="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
+  <div className="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
   <span style={{fontSize:"12px" , position:"relative", left:"-28px"}}> Description of the product</span>
 </div></Item>
-<Item className='App'><div class="row g-0">
-  <div class="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
-  <div class="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
+<Item className='App'><div className="row g-0">
+  <div className="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
+  <div className="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
   <span style={{fontSize:"12px" , position:"relative", left:"-28px"}}> Description of the product</span>
 </div></Item>
-<Item className='App'><div class="row g-0">
-  <div class="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
-  <div class="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
+<Item className='App'><div className="row g-0">
+  <div className="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
+  <div className="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
   <span style={{fontSize:"12px" , position:"relative", left:"-28px"}}> Description of the product</span>
 </div></Item>
-<Item className='App'><div class="row g-0">
-  <div class="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
-  <div class="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
+<Item className='App'><div className="row g-0">
+  <div className="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
+  <div className="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
   <span style={{fontSize:"12px" , position:"relative", left:"-28px"}}> Description of the product</span>
 </div></Item>
-<Item className='App'><div class="row g-0">
-  <div class="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
-  <div class="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
+<Item className='App'><div className="row g-0">
+  <div className="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
+  <div className="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
   <span style={{fontSize:"12px" , position:"relative", left:"-28px"}}> Description of the product</span>
 </div></Item>
-<Item className='App'><div class="row g-0">
-  <div class="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
-  <div class="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
+<Item className='App'><div className="row g-0">
+  <div className="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
+  <div className="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
   <span style={{fontSize:"12px" , position:"relative", left:"-28px"}}> Description of the product</span>
 </div></Item>
-<Item className='App'><div class="row g-0">
-  <div class="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
-  <div class="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
+<Item className='App'><div className="row g-0">
+  <div className="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
+  <div className="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
   <span style={{fontSize:"12px" , position:"relative", left:"-28px"}}> Description of the product</span>
 </div></Item>
-<Item className='App'><div class="row g-0">
-  <div class="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
-  <div class="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
+<Item className='App'><div className="row g-0">
+  <div className="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
+  <div className="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
   <span style={{fontSize:"12px" , position:"relative", left:"-28px"}}> Description of the product</span>
 </div></Item>
-<Item className='App'><div class="row g-0">
-  <div class="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
-  <div class="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
+<Item className='App'><div className="row g-0">
+  <div className="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
+  <div className="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
   <span style={{fontSize:"12px" , position:"relative", left:"-28px"}}> Description of the product</span>
 </div></Item>
-<Item className='App'><div class="row g-0">
-  <div class="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
-  <div class="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
+<Item className='App'><div className="row g-0">
+  <div className="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
+  <div className="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
   <span style={{fontSize:"12px" , position:"relative", left:"-28px"}}> Description of the product</span>
 </div></Item>
-<Item className='App'><div class="row g-0">
-  <div class="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
-  <div class="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
+<Item className='App'><div className="row g-0">
+  <div className="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
+  <div className="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
   <span style={{fontSize:"12px" , position:"relative", left:"-28px"}}> Description of the product</span>
 </div></Item>
 </Carousel>
 </div> */}
 {/*SECOND PRODUCT PART */}
-<p className='fs-3 text-light mt-4'> Product Name </p>
+{/* <p className='fs-3 text-light mt-4'> Product Name </p>
 <hr className='text-light'/>
 <div className='hehe fix2'>
 <Carousel breakPoints={breakPoints}> 
-<Item className='App'><div class="row g-0">
-  <div class="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
-  <div class="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
+<Item className='App'><div className="row g-0">
+  <div className="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
+  <div className="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
   <span style={{fontSize:"12px" , position:"relative", left:"-28px"}}> Description of the product</span>
 </div></Item>
-<Item className='App'><div class="row g-0">
-  <div class="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
-  <div class="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
+<Item className='App'><div className="row g-0">
+  <div className="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
+  <div className="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
   <span style={{fontSize:"12px" , position:"relative", left:"-28px"}}> Description of the product</span>
 </div></Item>
-<Item className='App'><div class="row g-0">
-  <div class="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
-  <div class="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
+<Item className='App'><div className="row g-0">
+  <div className="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
+  <div className="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
   <span style={{fontSize:"12px" , position:"relative", left:"-28px"}}> Description of the product</span>
 </div></Item>
-<Item className='App'><div class="row g-0">
-  <div class="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
-  <div class="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
+<Item className='App'><div className="row g-0">
+  <div className="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
+  <div className="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
   <span style={{fontSize:"12px" , position:"relative", left:"-28px"}}> Description of the product</span>
 </div></Item>
-<Item className='App'><div class="row g-0">
-  <div class="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
-  <div class="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
+<Item className='App'><div className="row g-0">
+  <div className="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
+  <div className="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
   <span style={{fontSize:"12px" , position:"relative", left:"-28px"}}> Description of the product</span>
 </div></Item>
-<Item className='App'><div class="row g-0">
-  <div class="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
-  <div class="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
+<Item className='App'><div className="row g-0">
+  <div className="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
+  <div className="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
   <span style={{fontSize:"12px" , position:"relative", left:"-28px"}}> Description of the product</span>
 </div></Item>
-<Item className='App'><div class="row g-0">
-  <div class="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
-  <div class="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
+<Item className='App'><div className="row g-0">
+  <div className="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
+  <div className="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
   <span style={{fontSize:"12px" , position:"relative", left:"-28px"}}> Description of the product</span>
 </div></Item>
-<Item className='App'><div class="row g-0">
-  <div class="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
-  <div class="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
+<Item className='App'><div className="row g-0">
+  <div className="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
+  <div className="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
   <span style={{fontSize:"12px" , position:"relative", left:"-28px"}}> Description of the product</span>
 </div></Item>
-<Item className='App'><div class="row g-0">
-  <div class="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
-  <div class="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
+<Item className='App'><div className="row g-0">
+  <div className="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
+  <div className="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
   <span style={{fontSize:"12px" , position:"relative", left:"-28px"}}> Description of the product</span>
 </div></Item>
-<Item className='App'><div class="row g-0">
-  <div class="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
-  <div class="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
+<Item className='App'><div className="row g-0">
+  <div className="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
+  <div className="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
   <span style={{fontSize:"12px" , position:"relative", left:"-28px"}}> Description of the product</span>
 </div></Item>
-<Item className='App'><div class="row g-0">
-  <div class="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
-  <div class="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
+<Item className='App'><div className="row g-0">
+  <div className="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
+  <div className="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
   <span style={{fontSize:"12px" , position:"relative", left:"-28px"}}> Description of the product</span>
 </div></Item>
-<Item className='App'><div class="row g-0">
-  <div class="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
-  <div class="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
+<Item className='App'><div className="row g-0">
+  <div className="col-6 col-md-4 mt-1 p-4"><img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-social.png" className='one'/> <br/> <span style={{fontSize:"18px", position:"relative", top:"27px"}}>Location</span></div>
+  <div className="col-sm-6 col-md-8 p-2 pt-2"><span style={{fontSize:"18px", position:"relative", top:"20px"}}>Product Name</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Brand name</span><br/> <span style={{fontSize:"18px", position:"relative", top:"20px"}}>$26.99</span> <br/> <span style={{fontSize:"12px", position:"relative", top:"20px"}}>Date : 26/10/21</span></div>
   <span style={{fontSize:"12px" , position:"relative", left:"-28px"}}> Description of the product</span>
 </div></Item>
 </Carousel>
-</div>
+</div> */}
 {/*STOPP */}
 </div>
 </div>
@@ -321,5 +367,5 @@ users.map((curElem) => {
       </>
   );
 };
-// const rootElement = document.getElementById("root");
-// ReactDOM.render(<App/>, rootElement);
+ {/* const rootElement = document.getElementById("root");
+ ReactDOM.render(<App/>, rootElement); */}

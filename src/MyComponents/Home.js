@@ -7,6 +7,8 @@ const Home = () => {
     return (
         <>
             <SideNavbar/>
+            {/* <Carouseel/>
+            <Cards/> */}
         </>
         // fetchedData={data}
     )
